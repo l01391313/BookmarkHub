@@ -19,10 +19,6 @@
         "message": "북마크 동기화",
         "description": ""
     },
-    "removeAllBookmarks": {
-        "message": "모든 북마크 삭제",
-        "description": ""
-    },
     "mergeToLocal": {
         "message": "Merge to Local",
         "description": ""
@@ -97,10 +93,6 @@
     },
     "syncBookmarksDesc": {
         "message": "서버의 모든 북마크를 로컬 브라우저에 병합한 후, 서버로 업로드",
-        "description": ""
-    },
-    "removeAllBookmarksDesc": {
-        "message": "모든 북마크를 삭제합니다. 사전에 백업하세요.",
         "description": ""
     },
     "refresh": {

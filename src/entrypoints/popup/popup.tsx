@@ -4,7 +4,7 @@ import { Dropdown, Badge } from 'react-bootstrap';
 import { IconContext } from 'react-icons'
 import {
     AiOutlineCloudUpload, AiOutlineCloudDownload,
-    AiOutlineCloudSync, AiOutlineSetting, AiOutlineClear,
+    AiOutlineCloudSync, AiOutlineSetting,
     AiOutlineInfoCircle, AiOutlineGithub, AiOutlineReload
 } from 'react-icons/ai'
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -57,9 +57,9 @@ const Popup: React.FC = () => {
                 <Dropdown.Item name='download' as="button" title={browser.i18n.getMessage('downloadBookmarksDesc')}><AiOutlineCloudDownload />{browser.i18n.getMessage('downloadBookmarks')}</Dropdown.Item>
                 <Dropdown.Item name='mergeToLocal' as="button" title={browser.i18n.getMessage('mergeToLocalDesc')}><AiOutlineCloudSync />{browser.i18n.getMessage('mergeToLocal')}</Dropdown.Item>
                 <Dropdown.Item name='mergeToCloud' as="button" title={browser.i18n.getMessage('mergeToCloudDesc')}><AiOutlineCloudSync />{browser.i18n.getMessage('mergeToCloud')}</Dropdown.Item>
-                <Dropdown.Divider />
-                <Dropdown.Item name='removeAll' as="button" title={browser.i18n.getMessage('removeAllBookmarksDesc')}><AiOutlineClear />{browser.i18n.getMessage('removeAllBookmarks')}</Dropdown.Item>
-                <Dropdown.Divider />
+                {/*<Dropdown.Divider />*/}
+                {/*<Dropdown.Item name='removeAll' as="button" title={browser.i18n.getMessage('removeAllBookmarksDesc')}><AiOutlineClear />{browser.i18n.getMessage('removeAllBookmarks')}</Dropdown.Item>*/}
+                {/*<Dropdown.Divider />*/}
                 <Dropdown.Item name='setting' as="button"><AiOutlineSetting />{browser.i18n.getMessage('settings')}</Dropdown.Item>
                 <Dropdown.ItemText>
                     <AiOutlineInfoCircle /><a href="https://github.com/dudor/BookmarkHub" target="_blank">{browser.i18n.getMessage('help')}</a>|

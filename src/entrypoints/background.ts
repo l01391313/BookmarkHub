@@ -54,15 +54,15 @@ export default defineBackground(() => {
         sendResponse(true);
       });
     }
-    if (msg.name === 'removeAll') {
-      curOperType = OperType.REMOVE
-      clearBookmarkTree().then(() => {
-        curOperType = OperType.NONE
-        browser.action.setBadgeText({ text: "" });
-        refreshLocalCount();
-        sendResponse(true);
-      });
-    }
+    // if (msg.name === 'removeAll') {
+    //   curOperType = OperType.REMOVE
+    //   clearBookmarkTree().then(() => {
+    //     curOperType = OperType.NONE
+    //     browser.action.setBadgeText({ text: "" });
+    //     refreshLocalCount();
+    //     sendResponse(true);
+    //   });
+    // }
     if (msg.name === 'setting') {
       browser.runtime.openOptionsPage().then(() => {
         sendResponse(true);
@@ -241,23 +241,23 @@ export default defineBackground(() => {
           }
         }
       }
-      if (curOperType === OperType.REMOVE && setting.enableNotify) {
-        await browser.notifications.create({
-          type: "basic",
-          iconUrl: iconLogo,
-          title: browser.i18n.getMessage('removeAllBookmarks'),
-          message: browser.i18n.getMessage('success')
-        });
-      }
+      // if (curOperType === OperType.REMOVE && setting.enableNotify) {
+      //   await browser.notifications.create({
+      //     type: "basic",
+      //     iconUrl: iconLogo,
+      //     title: browser.i18n.getMessage('removeAllBookmarks'),
+      //     message: browser.i18n.getMessage('success')
+      //   });
+      // }
     }
     catch (error: any) {
       console.error(error);
-      await browser.notifications.create({
-        type: "basic",
-        iconUrl: iconLogo,
-        title: browser.i18n.getMessage('removeAllBookmarks'),
-        message: `${browser.i18n.getMessage('error')}：${error.message}`
-      });
+      // await browser.notifications.create({
+      //   type: "basic",
+      //   iconUrl: iconLogo,
+      //   title: browser.i18n.getMessage('removeAllBookmarks'),
+      //   message: `${browser.i18n.getMessage('error')}：${error.message}`
+      // });
     }
   }
 

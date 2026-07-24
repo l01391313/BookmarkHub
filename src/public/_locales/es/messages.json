@@ -19,10 +19,6 @@
         "message": "Sincronizar marcadores",
         "description": ""
     },
-    "removeAllBookmarks": {
-        "message": "Eliminar todos los marcadores",
-        "description": ""
-    },
     "mergeToLocal": {
         "message": "Merge to Local",
         "description": ""
@@ -97,10 +93,6 @@
     },
     "syncBookmarksDesc": {
         "message": "Combinar todos los marcadores del servidor en el navegador local y luego subirlos al servidor",
-        "description": ""
-    },
-    "removeAllBookmarksDesc": {
-        "message": "Eliminar todos los marcadores. Por favor, realice una copia de seguridad primero.",
         "description": ""
     },
     "refresh": {

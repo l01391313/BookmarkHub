@@ -19,10 +19,6 @@
         "message": "Sincronizar favoritos",
         "description": ""
     },
-    "removeAllBookmarks": {
-        "message": "Remover todos os favoritos",
-        "description": ""
-    },
     "mergeToLocal": {
         "message": "Merge to Local",
         "description": ""
@@ -97,10 +93,6 @@
     },
     "syncBookmarksDesc": {
         "message": "Combinar todos os favoritos do servidor no navegador local e depois enviar para o servidor",
-        "description": ""
-    },
-    "removeAllBookmarksDesc": {
-        "message": "Remover todos os favoritos. Por favor, faça um backup primeiro.",
         "description": ""
     },
     "refresh": {

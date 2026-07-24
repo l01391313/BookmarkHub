@@ -19,10 +19,6 @@
         "message": "Sincronizza segnalibri",
         "description": ""
     },
-    "removeAllBookmarks": {
-        "message": "Rimuovi tutti i segnalibri",
-        "description": ""
-    },
     "mergeToLocal": {
         "message": "Merge to Local",
         "description": ""
@@ -97,10 +93,6 @@
     },
     "syncBookmarksDesc": {
         "message": "Unisci tutti i segnalibri del server nel browser locale e poi caricali sul server",
-        "description": ""
-    },
-    "removeAllBookmarksDesc": {
-        "message": "Rimuovi tutti i segnalibri. Fai prima un backup.",
         "description": ""
     },
     "refresh": {

@@ -19,10 +19,6 @@
         "message": "Bookmarks synchronisieren",
         "description": ""
     },
-    "removeAllBookmarks": {
-        "message": "Alle Bookmarks löschen",
-        "description": ""
-    },
     "mergeToLocal": {
         "message": "Merge to Local",
         "description": ""
@@ -97,10 +93,6 @@
     },
     "syncBookmarksDesc": {
         "message": "Alle Bookmarks vom Server in den lokalen Browser zusammenführen und dann auf den Server hochladen",
-        "description": ""
-    },
-    "removeAllBookmarksDesc": {
-        "message": "Alle Bookmarks löschen. Bitte erstellen Sie vorher ein Backup.",
         "description": ""
     },
     "refresh": {

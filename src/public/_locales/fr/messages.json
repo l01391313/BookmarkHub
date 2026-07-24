@@ -19,10 +19,6 @@
         "message": "Synchroniser les signets",
         "description": ""
     },
-    "removeAllBookmarks": {
-        "message": "Supprimer tous les signets",
-        "description": ""
-    },
     "mergeToLocal": {
         "message": "Merge to Local",
         "description": ""
@@ -97,10 +93,6 @@
     },
     "syncBookmarksDesc": {
         "message": "Fusionnez tous les signets du serveur dans le navigateur local, puis téléchargez-les vers le serveur",
-        "description": ""
-    },
-    "removeAllBookmarksDesc": {
-        "message": "Supprimez tous les signets. Veuillez effectuer une sauvegarde au préalable.",
         "description": ""
     },
     "refresh": {

@@ -19,10 +19,6 @@
         "message": "ブックマークを同期",
         "description": ""
     },
-    "removeAllBookmarks": {
-        "message": "全てのブックマークを削除",
-        "description": ""
-    },
     "mergeToLocal": {
         "message": "Merge to Local",
         "description": ""
@@ -97,10 +93,6 @@
     },
     "syncBookmarksDesc": {
         "message": "サーバー上の全てのブックマークをローカルブラウザにマージし、次にサーバーにアップロード",
-        "description": ""
-    },
-    "removeAllBookmarksDesc": {
-        "message": "全てのブックマークを削除します。事前にバックアップを行ってください。",
         "description": ""
     },
     "refresh": {

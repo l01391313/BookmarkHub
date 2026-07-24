@@ -19,10 +19,6 @@
         "message": "مزامنة العلامات المرجعية",
         "description": ""
     },
-    "removeAllBookmarks": {
-        "message": "إزالة جميع العلامات المرجعية",
-        "description": ""
-    },
     "mergeToLocal": {
         "message": "Merge to Local",
         "description": ""
@@ -97,10 +93,6 @@
     },
     "syncBookmarksDesc": {
         "message": "دمج جميع العلامات المرجعية على الخادم في المتصفح المحلي، ثم قم بتحميلها إلى الخادم",
-        "description": ""
-    },
-    "removeAllBookmarksDesc": {
-        "message": "أزل جميع العلامات المرجعية. يرجى إجراء نسخ احتياطي أولاً",
         "description": ""
     },
     "refresh": {

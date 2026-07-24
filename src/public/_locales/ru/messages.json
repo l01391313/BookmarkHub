@@ -19,10 +19,6 @@
         "message": "Синхронизировать закладки",
         "description": ""
     },
-    "removeAllBookmarks": {
-        "message": "Удалить все закладки",
-        "description": ""
-    },
     "mergeToLocal": {
         "message": "Merge to Local",
         "description": ""
@@ -97,10 +93,6 @@
     },
     "syncBookmarksDesc": {
         "message": "Объединить закладки на сервере и браузере, а затем выгрузить их на сервер",
-        "description": ""
-    },
-    "removeAllBookmarksDesc": {
-        "message": "Удалить все закладки, пожалуйста сделайте резервную копию",
         "description": ""
     },
     "refresh": {

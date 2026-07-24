@@ -19,10 +19,6 @@
         "message": "同步书签",
         "description": "把服务器上的书签全部合并到本地浏览器中，然后再上传到服务器"
     },
-    "removeAllBookmarks": {
-        "message": "清空本地书签",
-        "description": ""
-    },
     "mergeToLocal": {
         "message": "合并同步至本地",
         "description": "将远程书签合并到本地浏览器书签中，不删除本地书签"
@@ -97,10 +93,6 @@
     },
     "syncBookmarksDesc": {
         "message": "把服务器上的书签全部合并到本地浏览器中，然后再上传到服务器",
-        "description": ""
-    },
-    "removeAllBookmarksDesc": {
-        "message": "清空本地浏览器书签，请先做好备份",
         "description": ""
     },
     "refresh": {
