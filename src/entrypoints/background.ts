@@ -3,6 +3,13 @@ import { Setting } from '../utils/setting'
 import iconLogo from '../assets/icon.png'
 import { OperType, BookmarkInfo, SyncDataInfo, RootBookmarksType, BrowserType } from '../utils/models'
 import { Bookmarks } from 'wxt/browser'
+
+interface FlatBookmarkEntry {
+    title: string;
+    url: string;
+    folderPath: string[];
+}
+
 export default defineBackground(() => {
 
   browser.runtime.onInstalled.addListener(c => {
@@ -28,7 +35,24 @@ export default defineBackground(() => {
         refreshLocalCount();
         sendResponse(true);
       });
-
+    }
+    if (msg.name === 'mergeToLocal') {
+      curOperType = OperType.SYNC
+      mergeToLocal().then(() => {
+        curOperType = OperType.NONE
+        browser.action.setBadgeText({ text: "" });
+        refreshLocalCount();
+        sendResponse(true);
+      });
+    }
+    if (msg.name === 'mergeToCloud') {
+      curOperType = OperType.SYNC
+      mergeToCloud().then(() => {
+        curOperType = OperType.NONE
+        browser.action.setBadgeText({ text: "" });
+        refreshLocalCount();
+        sendResponse(true);
+      });
     }
     if (msg.name === 'removeAll') {
       curOperType = OperType.REMOVE
@@ -38,10 +62,14 @@ export default defineBackground(() => {
         refreshLocalCount();
         sendResponse(true);
       });
-
     }
     if (msg.name === 'setting') {
       browser.runtime.openOptionsPage().then(() => {
+        sendResponse(true);
+      });
+    }
+    if (msg.name === 'refreshCounts') {
+      refreshAllCounts().then(() => {
         sendResponse(true);
       });
     }
@@ -321,6 +349,23 @@ export default defineBackground(() => {
     await browser.storage.local.set({ localCount: count });
   }
 
+  async function refreshAllCounts() {
+    await refreshLocalCount();
+    try {
+      let setting = await Setting.build();
+      if (setting.githubToken && setting.gistID) {
+        let gist = await BookmarkService.get();
+        if (gist) {
+          let syncdata: SyncDataInfo = JSON.parse(gist);
+          const count = getBookmarkCount(syncdata.bookmarks);
+          await browser.storage.local.set({ remoteCount: count });
+        }
+      }
+    } catch (e) {
+      console.error("refreshAllCounts remote failed:", e);
+    }
+  }
+
 
   function formatBookmarks(bookmarks: BookmarkInfo[]): BookmarkInfo[] | undefined {
     if (bookmarks[0].children) {
@@ -362,6 +407,234 @@ export default defineBackground(() => {
     }
     return b;
   }
+
+  function flattenBookmarkTree(bookmarks: BookmarkInfo[], folderPath: string[] = []): FlatBookmarkEntry[] {
+    let result: FlatBookmarkEntry[] = [];
+    for (let node of bookmarks) {
+      if (node.url) {
+        result.push({ title: node.title, url: node.url, folderPath: [...folderPath] });
+      }
+      if (node.children && node.children.length > 0) {
+        result.push(...flattenBookmarkTree(node.children, [...folderPath, node.title]));
+      }
+    }
+    return result;
+  }
+
+  function buildTreeFromFlatEntries(entries: FlatBookmarkEntry[]): BookmarkInfo[] {
+    let rootMap = new Map<string, BookmarkInfo>();
+    for (let entry of entries) {
+      if (entry.folderPath.length === 0) {
+        if (!rootMap.has("_root")) {
+          rootMap.set("_root", { title: "root", children: [] });
+        }
+        rootMap.get("_root")!.children!.push({ title: entry.title, url: entry.url });
+      } else {
+        let rootName = entry.folderPath[0];
+        if (!rootMap.has(rootName)) {
+          rootMap.set(rootName, { title: rootName, children: [] });
+        }
+        let currentFolder = rootMap.get(rootName)!;
+        for (let i = 1; i < entry.folderPath.length; i++) {
+          let folderName = entry.folderPath[i];
+          let existing = currentFolder.children?.find(c => c.title === folderName && !c.url);
+          if (existing) {
+            currentFolder = existing;
+          } else {
+            let newFolder: BookmarkInfo = { title: folderName, children: [] };
+            currentFolder.children = currentFolder.children || [];
+            currentFolder.children.push(newFolder);
+            currentFolder = newFolder;
+          }
+        }
+        currentFolder.children = currentFolder.children || [];
+        currentFolder.children.push({ title: entry.title, url: entry.url });
+      }
+    }
+    let result: BookmarkInfo[] = [];
+    for (let [key, value] of rootMap) {
+      if (key !== "_root") {
+        result.push(value);
+      } else if (value.children) {
+        result.push(...value.children);
+      }
+    }
+    return result;
+  }
+
+  function mergeBookmarkTrees(base: BookmarkInfo[], toMerge: BookmarkInfo[]): BookmarkInfo[] {
+    let baseEntries = flattenBookmarkTree(base);
+    let mergeEntries = flattenBookmarkTree(toMerge);
+    let baseUrls = new Set<string>();
+    for (let entry of baseEntries) {
+      if (entry.url) baseUrls.add(entry.url);
+    }
+    for (let entry of mergeEntries) {
+      if (entry.url && !baseUrls.has(entry.url)) {
+        baseEntries.push(entry);
+        baseUrls.add(entry.url);
+      }
+    }
+    return buildTreeFromFlatEntries(baseEntries);
+  }
+
+  async function getRootFolderId(rootName: string): Promise<string> {
+    let tree = await browser.bookmarks.getTree();
+    let rootChildren = tree[0].children || [];
+    for (let root of rootChildren) {
+      if ((root.id === "1" || root.id === "toolbar_____") && rootName === RootBookmarksType.ToolbarFolder) return root.id;
+      if (root.id === "menu________" && rootName === RootBookmarksType.MenuFolder) return root.id;
+      if ((root.id === "2" || root.id === "unfiled_____") && (rootName === RootBookmarksType.UnfiledFolder || rootName === RootBookmarksType.MenuFolder)) return root.id;
+      if ((root.id === "3" || root.id === "mobile______") && rootName === RootBookmarksType.MobileFolder) return root.id;
+    }
+    for (let root of rootChildren) {
+      if (root.title === rootName) return root.id;
+    }
+    throw new Error(`Root folder not found: ${rootName}`);
+  }
+
+  async function createBookmarkWithPath(folderPath: string[], title: string, url: string) {
+    let rootName = folderPath[0];
+    let parentId = await getRootFolderId(rootName);
+    for (let i = 1; i < folderPath.length; i++) {
+      let folderName = folderPath[i];
+      let children = await browser.bookmarks.getChildren(parentId);
+      let existing = children.find(c => c.title === folderName && !c.url);
+      if (existing) {
+        parentId = existing.id;
+      } else {
+        let newFolder = await browser.bookmarks.create({ parentId: parentId, title: folderName });
+        parentId = newFolder.id;
+      }
+    }
+    await browser.bookmarks.create({ parentId: parentId, title: title, url: url });
+  }
+
+  async function mergeToLocal() {
+    try {
+      let setting = await Setting.build()
+      if (setting.githubToken == '') {
+        throw new Error("Gist Token Not Found");
+      }
+      if (setting.gistID == '') {
+        throw new Error("Gist ID Not Found");
+      }
+      if (setting.gistFileName == '') {
+        throw new Error("Gist File Not Found");
+      }
+      let gist = await BookmarkService.get();
+      if (!gist) {
+        if (setting.enableNotify) {
+          await browser.notifications.create({
+            type: "basic", iconUrl: iconLogo,
+            title: browser.i18n.getMessage('mergeToLocal'),
+            message: `${browser.i18n.getMessage('error')}: Gist file is null`
+          });
+        }
+        return;
+      }
+      let syncdata: SyncDataInfo = JSON.parse(gist);
+      if (!syncdata.bookmarks || syncdata.bookmarks.length === 0) {
+        if (setting.enableNotify) {
+          await browser.notifications.create({
+            type: "basic", iconUrl: iconLogo,
+            title: browser.i18n.getMessage('mergeToLocal'),
+            message: `${browser.i18n.getMessage('error')}: No remote bookmarks`
+          });
+        }
+        return;
+      }
+      let remoteEntries = flattenBookmarkTree(syncdata.bookmarks);
+      // Batch-collect all local bookmark URLs instead of per-item search
+      let bookmarks = await getBookmarks();
+      let localTree = formatBookmarks(bookmarks) || [];
+      let localEntries = flattenBookmarkTree(localTree);
+      let localUrls = new Set<string>();
+      for (let entry of localEntries) {
+        if (entry.url) localUrls.add(entry.url);
+      }
+      let addedCount = 0;
+      for (let entry of remoteEntries) {
+        if (!entry.url) continue;
+        if (!localUrls.has(entry.url)) {
+          await createBookmarkWithPath(entry.folderPath, entry.title, entry.url);
+          addedCount++;
+        }
+      }
+      const count = getBookmarkCount(syncdata.bookmarks);
+      await browser.storage.local.set({ remoteCount: count });
+      if (setting.enableNotify) {
+        await browser.notifications.create({
+          type: "basic", iconUrl: iconLogo,
+          title: browser.i18n.getMessage('mergeToLocal'),
+          message: `${browser.i18n.getMessage('success')} (${addedCount})`
+        });
+      }
+    } catch (error: any) {
+      console.error(error);
+      await browser.notifications.create({
+        type: "basic", iconUrl: iconLogo,
+        title: browser.i18n.getMessage('mergeToLocal'),
+        message: `${browser.i18n.getMessage('error')}: ${error.message}`
+      });
+    }
+  }
+
+  async function mergeToCloud() {
+    try {
+      let setting = await Setting.build()
+      if (setting.githubToken == '') {
+        throw new Error("Gist Token Not Found");
+      }
+      if (setting.gistID == '') {
+        throw new Error("Gist ID Not Found");
+      }
+      if (setting.gistFileName == '') {
+        throw new Error("Gist File Not Found");
+      }
+      let bookmarks = await getBookmarks();
+      let localTree = formatBookmarks(bookmarks) || [];
+      let gist = await BookmarkService.get();
+      let remoteTree: BookmarkInfo[] = [];
+      if (gist) {
+        let syncdata: SyncDataInfo = JSON.parse(gist);
+        if (syncdata.bookmarks) {
+          remoteTree = syncdata.bookmarks;
+        }
+      }
+      let mergedTree = mergeBookmarkTrees(remoteTree, localTree);
+      let syncdata = new SyncDataInfo();
+      syncdata.version = browser.runtime.getManifest().version;
+      syncdata.createDate = Date.now();
+      syncdata.bookmarks = mergedTree;
+      syncdata.browser = navigator.userAgent;
+      await BookmarkService.update({
+        files: {
+          [setting.gistFileName]: {
+            content: JSON.stringify(syncdata)
+          }
+        },
+        description: setting.gistFileName
+      });
+      const count = getBookmarkCount(mergedTree);
+      await browser.storage.local.set({ remoteCount: count });
+      if (setting.enableNotify) {
+        await browser.notifications.create({
+          type: "basic", iconUrl: iconLogo,
+          title: browser.i18n.getMessage('mergeToCloud'),
+          message: browser.i18n.getMessage('success')
+        });
+      }
+    } catch (error: any) {
+      console.error(error);
+      await browser.notifications.create({
+        type: "basic", iconUrl: iconLogo,
+        title: browser.i18n.getMessage('mergeToCloud'),
+        message: `${browser.i18n.getMessage('error')}: ${error.message}`
+      });
+    }
+  }
+
   ///暂时不启用自动备份
   /*
   async function backupToLocalStorage(bookmarks: BookmarkInfo[]) {

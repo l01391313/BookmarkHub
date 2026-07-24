@@ -23,6 +23,22 @@
         "message": "모든 북마크 삭제",
         "description": ""
     },
+    "mergeToLocal": {
+        "message": "Merge to Local",
+        "description": ""
+    },
+    "mergeToCloud": {
+        "message": "Merge to Cloud",
+        "description": ""
+    },
+    "mergeToLocalDesc": {
+        "message": "Merge remote bookmarks into local browser without deleting local bookmarks",
+        "description": ""
+    },
+    "mergeToCloudDesc": {
+        "message": "Merge local bookmarks into remote Gist without overwriting remote bookmarks",
+        "description": ""
+    },
     "settings": {
         "message": "설정",
         "description": ""
@@ -85,6 +101,10 @@
     },
     "removeAllBookmarksDesc": {
         "message": "모든 북마크를 삭제합니다. 사전에 백업하세요.",
+        "description": ""
+    },
+    "refresh": {
+        "message": "Refresh",
         "description": ""
     }
 }

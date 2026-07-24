@@ -23,6 +23,22 @@
         "message": "清空本地书签",
         "description": ""
     },
+    "mergeToLocal": {
+        "message": "合并同步至本地",
+        "description": "将远程书签合并到本地浏览器书签中，不删除本地书签"
+    },
+    "mergeToCloud": {
+        "message": "合并同步至云端",
+        "description": "将本地书签合并到远程Gist中，不覆盖远程书签"
+    },
+    "mergeToLocalDesc": {
+        "message": "将远程书签合并到本地浏览器书签中，不删除本地书签",
+        "description": ""
+    },
+    "mergeToCloudDesc": {
+        "message": "将本地书签合并到远程Gist中，不覆盖远程书签",
+        "description": ""
+    },
     "settings": {
         "message": "设置",
         "description": ""
@@ -85,6 +101,10 @@
     },
     "removeAllBookmarksDesc": {
         "message": "清空本地浏览器书签，请先做好备份",
+        "description": ""
+    },
+    "refresh": {
+        "message": "刷新",
         "description": ""
     }
 }

@@ -23,6 +23,22 @@
         "message": "全てのブックマークを削除",
         "description": ""
     },
+    "mergeToLocal": {
+        "message": "Merge to Local",
+        "description": ""
+    },
+    "mergeToCloud": {
+        "message": "Merge to Cloud",
+        "description": ""
+    },
+    "mergeToLocalDesc": {
+        "message": "Merge remote bookmarks into local browser without deleting local bookmarks",
+        "description": ""
+    },
+    "mergeToCloudDesc": {
+        "message": "Merge local bookmarks into remote Gist without overwriting remote bookmarks",
+        "description": ""
+    },
     "settings": {
         "message": "設定",
         "description": ""
@@ -85,6 +101,10 @@
     },
     "removeAllBookmarksDesc": {
         "message": "全てのブックマークを削除します。事前にバックアップを行ってください。",
+        "description": ""
+    },
+    "refresh": {
+        "message": "Refresh",
         "description": ""
     }
 }

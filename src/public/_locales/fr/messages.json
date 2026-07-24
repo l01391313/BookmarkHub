@@ -23,6 +23,22 @@
         "message": "Supprimer tous les signets",
         "description": ""
     },
+    "mergeToLocal": {
+        "message": "Merge to Local",
+        "description": ""
+    },
+    "mergeToCloud": {
+        "message": "Merge to Cloud",
+        "description": ""
+    },
+    "mergeToLocalDesc": {
+        "message": "Merge remote bookmarks into local browser without deleting local bookmarks",
+        "description": ""
+    },
+    "mergeToCloudDesc": {
+        "message": "Merge local bookmarks into remote Gist without overwriting remote bookmarks",
+        "description": ""
+    },
     "settings": {
         "message": "Paramètres",
         "description": ""
@@ -85,6 +101,10 @@
     },
     "removeAllBookmarksDesc": {
         "message": "Supprimez tous les signets. Veuillez effectuer une sauvegarde au préalable.",
+        "description": ""
+    },
+    "refresh": {
+        "message": "Refresh",
         "description": ""
     }
 }
